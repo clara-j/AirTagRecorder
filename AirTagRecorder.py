@@ -3,6 +3,7 @@ import os
 import tempfile
 import time
 import shutil
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -88,7 +89,15 @@ def recordLocations(sourceLastChanged):
   print("\nDone, sleeping")
   return sourceLastChanged
 
+def checkRunning():
+  output = int(subprocess.getoutput('ps aux|grep "FindMy.app/Contents/MacOS/FindM[y]"|wc -l'))
+  if output <= 0:
+    print("FindMy not running so attempting to start")
+    subprocess.getoutput("open /System/Applications/FindMy.app")
+
+
 while True:
+  checkRunning()
   csvFile = openCsvFile(csvFileLocation)
   sourceLastChanged = recordLocations(sourceLastChanged)
   time.sleep(60)
